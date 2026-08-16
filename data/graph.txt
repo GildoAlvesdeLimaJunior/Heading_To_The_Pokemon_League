@@ -1,0 +1,125 @@
+# 1. Graph Configuration:
+# [Nodes] [Edges] [K_Factor]
+
+12 16 12
+
+# M lines: [Origin] [Destination] [Weight_W]
+
+0 1 10
+1 2 15
+1 4 25
+2 3 20
+3 4 15
+3 7 15
+4 5 25
+5 6 30
+5 9 20
+6 7 20
+6 8 20
+7 8 35
+7 11 40
+8 9 25
+9 10 15
+10 11 20
+
+# 2. Node Definitions:
+# M Lines: [node_id] [name] [type: REGULAR, LABORATORY, POKEMON_CENTER, GYM, STADIUM]
+
+0 Pallet_Town LABORATORY
+1 Viridian_City POKEMON_CENTER
+2 Pewter_City GYM
+3 Cerulean_City GYM
+4 Vermilion_City GYM
+5 Celadon_City GYM
+6 Fuchsia_City GYM
+7 Saffron_City GYM
+8 Cinnabar_Island GYM
+9 Lavender_Town GYM
+10 Route_10 POKEMON_CENTER
+11 Indigo_Plateau STADIUM
+
+# 3. Types and Multiplier Matrix:
+# [num_types]
+
+8
+
+# Type names by ID (0 ... N-1):
+
+Water Fire Grass Electric Ice Fighting Psychic Ghost
+
+# Multiplier Matrix [Attacker][Defender]:
+
+0.5 2.0 0.5 1.0 1.0 1.0 1.0 1.0
+0.5 0.5 2.0 1.0 2.0 1.0 1.0 1.0
+2.0 0.5 0.5 1.0 1.0 1.0 1.0 1.0
+2.0 1.0 0.5 0.5 1.0 1.0 1.0 1.0
+0.5 0.5 2.0 1.0 0.5 1.0 1.0 1.0
+1.0 1.0 1.0 1.0 2.0 1.0 0.5 0.0
+1.0 1.0 1.0 1.0 1.0 2.0 0.5 1.0
+1.0 1.0 1.0 1.0 1.0 1.0 2.0 2.0
+
+# 4. Species Catalog and Evolutions:
+# [num_species]
+
+8
+
+# [species_id] [num_evolutions] [phase1_name] [phase2_name] ... [type_id]
+
+0 3 Squirtle Wartortle Blastoise 0
+1 3 Charmander Charmeleon Charizard 1
+2 3 Bulbasaur Ivysaur Venusaur 2
+3 3 Shinx Luxio Luxray 3
+4 2 Sneasel Weavile 4
+5 2 Riolu Lucario 5
+6 3 Abra Kadabra Alakazam 6
+7 3 Gastly Haunter Gengar 7
+
+# 5. Laboratory Starter Pokemons:
+# [species_id1] [species_id2] [species_id3]
+
+0 1 2
+
+# 6. Wild Pokemons:
+# [num_wild_pokemons]
+
+5
+
+# [instance_id] [species_id] [current_node] [base_ap] [base_dp]
+
+100 0 1 12 10
+101 2 1 10 12
+102 3 10 15 11
+103 4 10 14 13
+104 6 10 16 9
+
+# 7. Available Items at Nodes:
+# [num_items]
+
+5
+
+# [item_id] [node_id] [name] [effect] [value]
+# Effects: 0: Heal HP | 1: Revive
+
+0 0 Potion 0 20
+1 1 Super_Potion 0 50
+2 1 Revive 1 50
+3 10 Hyper_Potion 0 100
+4 10 Max_Revive 1 100
+
+# 8. Trainers and Gym Leaders:
+# [num_trainers]
+
+10
+
+# [trainer_id] [name] [node_id] [is_leader] [num_pokemons] [species_id] [level] ...
+
+1 Brock 2 1 1 5 12
+2 Misty 3 1 1 0 16
+3 Lt_Surge 4 1 1 3 20
+4 Erika 5 1 1 2 24
+5 Pryce 6 1 1 4 28
+6 Sabrina 7 1 1 6 32
+7 Blaine 8 1 1 1 36
+8 Agatha 9 1 1 7 40
+9 Youngster_Joey 1 0 1 3 8
+10 Rocket_Grunt 10 0 1 7 25
