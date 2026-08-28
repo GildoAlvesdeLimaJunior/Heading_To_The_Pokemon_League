@@ -9,7 +9,7 @@ namespace StateEngine {
 // 'destino' nao for vizinho do no atual ou se as
 // posicoes forem invalidas. atualiza
 // treinador.no_atual e chama função de avancar tempo com o peso da aresta usada
-bool moveTreinador(GameState& estado, Treinador& treinador, int destino);
+bool moverTreinador(GameState& estado, Treinador& treinador, int destino);
 
 // Aplica os efeitos de percorrer 'distancia'
 // choco de ovos, regeneracao de HP e contagem dos tempos de
@@ -17,7 +17,28 @@ bool moveTreinador(GameState& estado, Treinador& treinador, int destino);
 void AvancarTempo(GameState& estado, Treinador& treinador, int distancia);
 
 
+// True se ainda cabe mais um ovo (party + ovos < MAX_UNIDADES).
+// Chamar isso antas de adicionar um ovo encontrado ao vector treinador.ovos.
+bool podePegarOvo(const Treinador& treinador);
 
+
+// Usa uma erva do inventario para curar +10 em todos os pokemons conscientes da equipe
+// Retorna false se nao houver erva disponivel.
+bool usarErva(Treinador& treinador);
+
+
+
+// Cria o treinador jogador: posiciona no laboratorio, monta a party a
+// partir dos ids em 'especies_escolhidas' (indices em
+// estado.catalogo_especies), registra em estado.treinadores e define
+// estado.jogador_id. A ESCOLHA de quais especies (os 3 starters, ou 1
+// aleatorio) e feita por quem chama esta funcao -- aqui so executamos a
+// criacao em si. Retorna o id atribuido ao jogador.
+int criarJogador(GameState& estado, const std::string& nome, const std::vector<int>& especies_escolhidas);
+
+
+// Busca um treinador pelo id  Retorna nullptr se nao achar.
+Treinador* encontrarTreinadorPorId(GameState& estado, int id);
 
 
 
