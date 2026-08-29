@@ -161,50 +161,29 @@ namespace StateEngine{
             }
 
     
-    }
-
-}
-
-
-
-
-    bool moverTreinador(GameState &estado, Treinador& treinador, int destino){
-
-        int atual = treinador.no_atual;
-        int total = estado.nos.size();
-        int peso = 0;
-        bool tem = false;
-
-
-        if (atual < 0 || atual >= total || destino < 0 || destino >= total){
-            return false;
         }
 
-        No &Noatual = estado.nos[atual];
+    }
 
 
-        for (Arestas &m : Noatual.vizinhos){
 
-            if (m.para == destino){
-                peso = m.peso;
-                tem = true;
-                peso = m.peso;
-                break;
+    void andandoGanharXP(Treinador& treinador, int dist) {
+
+        for (Pokemon& p : treinador.party) {
+
+            p.dist_xp = p.dist_xp + dist;
+            int ganho = p.dist_xp / DIST_XP;
+
+            if (ganho > 0) {
+
+                p.xp = p.xp + ganho;
+                p.dist_xp = p.dist_xp - ganho * DIST_XP;
+            
             }
-
         }
-
-        if (!tem){
-
-            return false;
-        }
-
-        treinador.no_atual = destino;
-        AvancarTempo(estado, treinador, peso); //TRABALHAR NISSO DPS
-
-        return true;
 
     }
+
 
 
 
@@ -259,12 +238,75 @@ namespace StateEngine{
 
 
 
-    bool podePegarOvo(const Treinador& treinador) {
+    bool podePegarOvo(Treinador& treinador) {
 
 
         int total = treinador.party.size() + treinador.ovos.size();
 
         return total < MAX_UNIDADES;
+    }
+
+
+
+
+
+    bool podeBatalhar(Treinador &treinador){
+
+
+        int cont = 0;
+
+        for (Pokemon &p : treinador.party){
+
+            if (p.status == PokemonStatus::Consciente){
+                cont++;
+            }
+        }
+
+        if (cont >= 3){
+            return true;
+        }
+
+        return false;
+
+    }
+
+
+
+
+    bool podeInscrever(GameState &estado, Treinador &treinador){
+
+
+        if (treinador.no_atual != estado.estadio){
+            return false;
+        }
+
+        bool tempodisp = prazoExpirado(estado);
+
+        if (!tempodisp){
+            return false;
+        }
+
+        int insigniasnec = std::min(8, (int)estado.ginasios.size());
+
+        if (treinador.insignias >= insigniasnec){
+            return true;
+        }
+
+        return false;
+
+    }
+
+
+
+
+    bool prazoExpirado(GameState &estado){
+
+
+        if (estado.tempo_decorrido > estado.tempo_limite){
+            return true;
+        }
+        
+        return false;
     }
 
 
@@ -322,6 +364,66 @@ namespace StateEngine{
 
     }
 
+
+
+
+
+    void AvancarTempo(GameState &estado, Treinador &treinador, int dist){
+
+        estado.tempo_decorrido = estado.tempo_decorrido + dist;
+
+        andandoGanharXP(treinador, dist);
+
+        andandoChocarOvos(treinador, dist);
+
+        andandoRecuperarHP(treinador, dist);
+
+        andandoIndisponivelReducao(treinador, dist);
+
+
+    }
+
+
+
+
+
+    bool moverTreinador(GameState &estado, Treinador& treinador, int destino){
+
+        int atual = treinador.no_atual;
+        int total = estado.nos.size();
+        int peso = 0;
+        bool tem = false;
+
+
+        if (atual < 0 || atual >= total || destino < 0 || destino >= total){
+            return false;
+        }
+
+        No &Noatual = estado.nos[atual];
+
+
+        for (Arestas &m : Noatual.vizinhos){
+
+            if (m.para == destino){
+                peso = m.peso;
+                tem = true;
+                peso = m.peso;
+                break;
+            }
+
+        }
+
+        if (!tem){
+
+            return false;
+        }
+
+        treinador.no_atual = destino;
+        AvancarTempo(estado, treinador, peso);
+
+        return true;
+
+    }
 
 
 

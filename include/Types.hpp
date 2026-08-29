@@ -64,6 +64,8 @@ struct Pokemon {
   int xp = 0;
   int evo = 1;
   int dist_ovo = 0;
+  int dist_ovo = 0;
+  int dist_xp = 0;
 
   PokemonStatus status = PokemonStatus ::Consciente;
   int no_atual = -1;
