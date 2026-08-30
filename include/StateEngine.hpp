@@ -26,6 +26,12 @@ retorna false se nao houver erva disponivel. */
 bool usarErva(Treinador& treinador);
 
 
+/*Devolve a distância em número de arestas de raiz até cada nó, 
+-1 para quem não é alcançável, mas o intuito é que seja todo mundo alcançavel, eu espero,
+use sabendo qual o vértice ou quais vértices que o jogador quer saber a distancia*/
+std::vector<int> acharQuantidadePontos(GameState &estado, int raiz);
+
+
 
 /* cria o treinador jogador, posiciona no laboratorio, monta a party a
 partir dos ids em "especies", que são indices em estado.catalogo_especies, 
