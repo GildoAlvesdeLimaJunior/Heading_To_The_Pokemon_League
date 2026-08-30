@@ -1,5 +1,6 @@
 #include "StateEngine.hpp"
 #include <algorithm>
+#include <queue>
 
 
 
@@ -198,6 +199,53 @@ namespace StateEngine{
         }
 
         return nullptr;
+    }
+
+
+
+
+
+    std::vector<int> acharQuantidadePontos(GameState &estado, int raiz){
+
+
+        int nostotal = estado.nos.size();
+
+        std::vector<int> distancia(nostotal, -1);
+
+
+        if (raiz < 0 || raiz >= nostotal){
+
+            return distancia;
+
+            
+        }
+
+        std::queue<int> fila;
+
+        distancia[raiz] = 0;
+
+
+
+        fila.push(raiz);
+        while (fila.empty() == false){
+
+            int u = fila.front();
+            fila.pop();
+            for (Arestas &a : estado.nos[u].vizinhos){
+
+                if (distancia[a.para] == -1){
+
+                    distancia[a.para] = distancia[u] + 1;
+                    fila.push(a.para);
+                }
+            }
+        }
+
+
+
+
+        return distancia;
+
     }
 
 
