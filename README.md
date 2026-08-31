@@ -38,7 +38,7 @@ A graph-based text RPG engine developed as a project for the **Graph Algorithms*
 | **BFS / DFS** | Connectivity validation at startup; reachable subgraphs for roaming entities (own responsibility: João) |
 | **MST — Prim / Kruskal** | Edge-density analysis to validate the global time limit $T$ (own responsibility: Almir) |
 
-> Each team member owns **one graph operation**, as required by the assignment (item ix): **Gildo → Dijkstra**, **João → BFS/DFS**, **Almir → MST (Prim/Kruskal)**. See `docs/classes.txt` and `docs/guide.txt`.
+> Each team member owns **one graph operation**, as required by the assignment (item ix): **Gildo → Dijkstra**, **João → BFS/DFS**, **Almir → MST (Prim/Kruskal)**.
 
 ## Module Overview
 
@@ -112,11 +112,6 @@ Heading_To_The_Pokemon_League/
 │   └── StateEngine.cpp
 ├── data/
 │   └── graph.txt
-├── docs/
-│   ├── Request.txt
-│   ├── classes.txt
-│   └── guide.txt
-├── roteiro_videos.tex
 └── README.md
 ```
 
@@ -156,8 +151,6 @@ The whole world is described by a single ASCII config file. Lines starting with 
 | 9 | **Trainers & Gym Leaders** | `[qty_trainers]` then `[id] [name] [node] [is_leader] [qty_pokemon] [species] [level]...` per trainer |
 
 The state of each section is inferred in order, so keep the sections in the sequence above. Gym Leaders are marked with `is_leader = 1`; the Team Rocket roaming unit is identified by its name (e.g. `Rocket_Grunt`).
-
-> Full requirements in [`docs/Request.txt`](docs/Request.txt).
 
 ## Authors
 
