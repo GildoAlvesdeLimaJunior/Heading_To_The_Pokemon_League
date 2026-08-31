@@ -159,6 +159,7 @@ The state of each section is inferred in order, so keep the sections in the sequ
 - **João Landin da Cruz Neto**
 - Video : https://youtu.be/cEEJ3ymrExU
 - **Francisco Almir Bezerra Leite**
+- Video : https://www.youtube.com/watch?v=cyNn_Zl_Jjw
 
 ## Course
 
