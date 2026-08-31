@@ -1,0 +1,88 @@
+Documentação Conceitual de Módulos e
+Arquitetura do Sistema
+Simulação de RPG em Grafos Ponderados
+Autores: Francisco Almir, Gildo Alves, João Landin
+Universidade Federal do Cariri (UFCA)
+Agosto de 2026
+1 Arquitetura Conceitual dos Módulos
+A estrutura do projeto foi dividida em sete módulos isolados e desacoplados, permitindo o
+desenvolvimento simultâneo e paralelo sem a inclusão de código fonte nesta especificação.
+2 Módulo 1: Tipos e Estruturas de Memória
+Responsável: Gildo Alves
+• Responsabilidade: Atuar como a base central de dados e definições de memória do
+sistema, sem conter lógica de execução ou métodos de processamento.
+• Funcionamento: Armazena em RAM as definições das entidades (Pokémons e Treina-
+dores), arestas do grafo e o estado global da simulação.
+• Garantia Técnica: Permite que qualquer outro módulo consulte ou modifique atributos
+(como pontos de vida, experiência, tipo elemental ou vértice atual) em tempo constante
+O(1) sem chamadas complexas.
+3 Módulo 2: Parser e Carregador de Entrada/Saída
+Responsável: Gildo Alves
+• Responsabilidade: Leitura do arquivo de texto do mapa e inicialização de todas as
+entidades na memória principal.
+• Funcionamento: Processa a descrição do grafo ignorando linhas de comentário, cons-
+trói a malha de adjacência bidirecional e sorteia a localização e atributos das entidades
+selvagens.
+• Garantia Técnica: Garante a execução da simulação 100% em memória RAM após a
+inicialização, dispensando acessos subsequentes ao disco rígido.
+1
+4 Módulo 3: Motor de Teoria dos Grafos
+Responsável: Suporte Distribuído (um algoritmo por integrante)
+• Responsabilidade: Concentrar todos os algoritmos puros da Teoria dos Grafos, imple-
+mentados manualmente do zero sem bibliotecas externas. Para atender ao requisito de
+que cada integrante cuide de ao menos uma operação sobre o grafo, cada um recebeu
+um algoritmo próprio, conforme descrito a seguir.
+• Funcionamento:
+– Caminho Mínimo — Responsável: Gildo Alves. Determina as rotas mais rápidas
+e calcula o tempo limite T do torneio através do algoritmo de Dijkstra (com
+min-heap manual).
+– Alcance e Conectividade — Responsável: João Landin. Valida a navegabilidade
+do mapa e as rotas de fuga através de Busca em Largura (BFS) e Busca em
+Profundidade (DFS), integradas ao motor de movimentação.
+– Análise Estrutural — Responsável: Francisco Almir. Extrai a Árvore Geradora
+Mínima (MST) com os algoritmos de Kruskal (union-find manual) e Prim (min-heap
+manual) para mensurar a densidade da malha.
+5 Módulo 4: Motor de Estados e Movimentação
+Responsável: João Landin
+• Operação sobre o grafo: BFS e DFS (ver Módulo 3) aplicadas à navegabilidade e às
+rotas de fuga durante a movimentação.
+• Responsabilidade: Controlar a física de movimentação no mapa, a decrepitação do
+tempo e a atualização dos contadores temporais.
+• Funcionamento:
+– Deslocamento: Processa o avanço do jogador entre vértices adjacentes e consome
+o tempo proporcional ao peso das arestas no relógio global.
+– Ciclo de Vida: Gerencia a incubação de ovos (chocam ao atingir 100 unidades de
+distância), aplica cura passiva por caminhada e atualiza o tempo de recuperação no
+Centro Médico (PMC).
+– Zonas Seguras e Inventário: Restringe a ocorrência de batalhas em zonas neutras
+(Laboratório e PMCs) e limita a equipe ativa a no máximo 6 Pokémons, enviando o
+excedente para o armazenamento do Prof. Carvalho.
+6 Módulo 5: Motor de Combate e Progressão
+Responsável: Francisco Almir
+• Operação sobre o grafo: Árvore Geradora Mínima (MST) pelos algoritmos de Kruskal
+e Prim (ver Módulo 3) para análise da densidade da malha.
+• Responsabilidade: Executar a matemática de duelos em turnos, a distribuição de pon-
+tos de experiência e a evolução dos atributos.
+• Funcionamento:
+– Cálculo de Dano: Resolve a diferença entre os pontos de ataque e defesa dos
+combatentes, multiplicando o resultado pela tabela de vantagens elementais.
+– Probabilidade Relativa: Sorteia acertos críticos (2× de dano) e esquivas (dano
+nulo) com chances calculadas a partir da diferença absoluta de experiência entre
+atacante e defensor.
+– Progressão: Concede experiência pós-batalha, incrementa atributos e aplica a mu-
+tação de fase evolutiva com bônus de status ao atingir a marca de 1000 XP.
+2
+7 Módulo 6: Interface de Usuário
+Responsável: Suporte Compartilhado
+• Responsabilidade: Gerenciar a exibição de dados e a captura de entradas via terminal
+de texto.
+• Funcionamento: Formata a apresentação dos vértices adjacentes disponíveis, desenha
+barras de vida em modo caractere, exibe o histórico de turnos de combate e os relatórios
+da equipe.
+8 Módulo 7: Gerador de Números Aleatórios
+Responsável: Suporte Compartilhado
+• Responsabilidade: Centralizar a geração de eventos probabilísticos e números pseudo-
+aleatórios em toda a aplicação.
+• Funcionamento: Fornece distribuições estatísticas uniformes para o sorteio de entidades
+no boot, cálculos de esquiva e determinações de posições no mapa.
+3

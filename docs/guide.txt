@@ -1,0 +1,93 @@
+Guia Mestre de Arquitetura, Modelagem &
+Workflow
+Projeto: Rumo à Liga Pokémon — C++17 & Teoria dos Grafos
+Equipe: Gildo Alves, João Landin da Cruz Neto, Francisco Almir Bezerra Leite
+UFCA — Ciência da Computação
+Agosto de 2026
+1 Mapa de Arquitetura de Classes e Tipos
+A aplicação adota o padrão Data-Oriented Design para maximizar a localidade de referência
+no Cache L1/L2 e zerar dependências cruzadas durante a compilação.
+1.1 Visão Geral do Grafo de Classes
+• Types.hpp: Mapeia apenas dados puros (Plain Old Data Structures). Não contém méto-
+dos complexos.
+• MapParser: Responsável pela desserialização do arquivo de texto para a memória RAM.
+• GraphEngine: Encapsula a lista de adjacência e os algoritmos de Dijkstra, BFS/DFS e
+MST. Cada algoritmo é de responsabilidade individual de um integrante: Dijkstra
+(Gildo), BFS/DFS (João) e MST (Almir), para cumprir o requisito de ao menos uma
+operação sobre o grafo por integrante.
+• StateEngine: Gerencia o tempo global, localização das entidades, safe zones e atualiza-
+ções a cada movimento.
+• BattleEngine: Executa os turnos de combate, sorteio matematicamente ponderado por
+XP, cálculo de dano e evoluções.
+—
+2 Guia Extremamente Detalhado de Modelagem
+2.1 Módulo I: Parseamento e Inicialização (Gildo Alves)
+Operação sobre o grafo: caminho mínimo (Dijkstra) para cálculo do tempo limite T.
+1. Leitura do Arquivo: O parser lê as instâncias no arquivo .txt. Linhas iniciadas com
+# são descartadas.
+2. Alocação da Topologia: Redimensiona a lista de adjacência graph com base na quan-
+tidade de vértices e preenche as arestas bidirecionalmente.
+3. Sorteio de Entidades no Boot: Utilizando o gerador std::mt19937:
+• Instancia a quantidade estipulada de Pokémons e Treinadores Selvagens.
+1
+• Define posições iniciais v ∈ V via sorteio uniforme.
+• Gera os atributos iniciais de combate (HP, AP, DP, XP).
+4. Cálculo do Tempo Limite (T ):
+10 · X
+e∈E
+w(e) ≤ T ≤ 15 · X
+e∈E
+w(e) (1)
+Itera sobre toda a lista de adjacência, soma os pesos w(e) (considerando apenas uma
+direção por aresta) e multiplica pelo fator parametrizado no arquivo.
+2.2 Módulo II: Motor de Movimento e Estados (João Landin)
+Operação sobre o grafo: busca em largura (BFS) e busca em profundidade (DFS) para
+validar a navegabilidade do mapa e as rotas de fuga.
+A cada despache de movimentação do jogador para um nó adjacente vnext:
+1. Consumo de Tempo e Distância: O relógio global avança ∆t = w(e). O total
+percorrido incrementa a distância relativa d = w(e).
+2. Tick de Recuperação e Choco:
+• Para cada ovo na equipe: egg_distance ← egg_distance + d. Se egg_distance ≥
+100, status muda para Conscious com XP = 0.
+• Regeneração passiva: Se d ≥ 10, recupera ⌊d/10⌋ HP de todos os Pokémons consci-
+entes ativos.
+• Timers de indisponibilidade (Inconsciente/PMC): Decrementa o tempo de internação
+ou bloqueio em d unidades de distância. Quando zerar, restaura HP = 100.
+3. Checagem de Safe Zone:
+can_battle =
+(
+false, se vnext = lab_node ∨ vnext ∈ pmc_nodes
+true, caso contrario (2)
+2.3 Módulo III: Motor Matemático de Combate (Francisco Almir)
+Operação sobre o grafo: árvore geradora mínima (MST) pelos algoritmos de Kruskal e
+Prim para mensurar a densidade da malha.
+Quando a batalha é iniciada fora das Safe Zones:
+1. Verificação de Pré-requisito: O jogador precisa ter pelo menos 3 Pokémons no estado
+Conscious (HP ≥ 20).
+2. Cálculo do Dano por Turno:
+Dano = max (0, APef etivo − DPef etivo) (3)
+Onde APef etivo = APbase + Bônus do Treinador.
+3. Evasão e Acerto Crítico (RNG Relativo):
+• A probabilidade Pcrit e Pevasao variam proporcionalmente ao módulo da diferença de
+XP: ∆XP = |XPatk − XPdef |.
+• Se o dado sortear Evasão: Dano = 0.
+• Se sortear Crítico: Dano = 2 · Dano.
+4. Evolução e Buffs: Ao vencer, ganha +10 XP. Se XP ≥ 1000:
+phase ← phase + 1, AP ← ⌊1.3 · AP ⌋, DP ← ⌊1.3 · DP ⌋ (4)
+—
+2
+3 Workflow de Desenvolvimento em Paralelo
+Para garantir que o repositório no Git continue compilável sem gargalos de integração, o fluxo
+deve seguir estritamente o cronograma abaixo:
+Fase Gildo Alves João Landin Francisco Almir
+0 Finalizar Types.hpp Aprovar Types.hpp Aprovar Types.hpp
+1 Implementar MapParser Mockar movimento (Zsh) Mockar lutas em main
+2 Algoritmo de Dijkstra Fazer lógica PMC/Ovos Algoritmo de MST
+3 Cálculo do Tempo T Integração BFS/DFS Evasão, Crítico e Evoluções
+4 Integração Final do Main Loop & Gravação dos Vídeos
+4 Regras Rígidas para a Defesa do Projeto
+• Proibição Total de Libs de Grafo: O uso de qualquer biblioteca externa de grafos
+resultará em desqualificação imediata.
+• Individualidade nos Vídeos: Cada um dos três integrantes deve gravar o seu próprio
+vídeo individual explicando a implementação manual das suas rotinas no metal.
+3

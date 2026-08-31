@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <queue>
 
+#include "RNG.hpp"
+
 
 
 
@@ -64,23 +66,11 @@ namespace StateEngine{
 
 
     void andandoRecuperarHP(Treinador &treinador, int dist){
-
-
-        if (dist >= 10){
-
-            int hpAdd = dist/10;
-
-            for (Pokemon &bicho : treinador.party){
-
-                if (bicho.status == PokemonStatus::Consciente){
-                    bicho.hp = bicho.hp + hpAdd;
-
-                    if (bicho.max_hp < bicho.hp){
-                        bicho.hp = bicho.max_hp;
-                    }
-                }
-            }
-        }
+        // pokemons conscientes NAO recuperam HP passivamente ao caminhar,
+        // independente da vida. A recuperacao de HP se da apenas via
+        // Centro Pokemon, itens ou ervas.
+        (void)treinador;
+        (void)dist;
     }
 
 
@@ -94,7 +84,9 @@ namespace StateEngine{
         for (Pokemon &bicho : treinador.party){
 
 
-            if (bicho.status == PokemonStatus::Inconsciente || bicho.status == PokemonStatus::No_PMC){
+            // pokemon inconsciente se recupera passivamente ao caminhar;
+            // ja o muito machucado (No_PMC) so se cura no Centro Pokemon
+            if (bicho.status == PokemonStatus::Inconsciente){
 
 
                 bicho.tempo_recuperacao = bicho.tempo_recuperacao - dist;
@@ -128,6 +120,7 @@ namespace StateEngine{
 
             if (ovo.dist_ovo >= 100){
                 ovo.status = PokemonStatus::Consciente; //nasceu
+
                 ovo.xp = 0;
                 ovo.dist_ovo = 0;
             }
@@ -180,6 +173,38 @@ namespace StateEngine{
                 p.xp = p.xp + ganho;
                 p.dist_xp = p.dist_xp - ganho * DIST_XP;
             
+            }
+        }
+
+    }
+
+    void andandoReporSelvagens(GameState& estado, int dist) {
+
+        for (Pokemon& s : estado.selvagens) {
+
+            if (s.status == PokemonStatus::No_PMC && s.tempo_recuperacao > 0) {
+
+                s.tempo_recuperacao = s.tempo_recuperacao - dist;
+
+                if (s.tempo_recuperacao <= 0) {
+
+                    s.tempo_recuperacao = 0;
+                    s.status = PokemonStatus::Consciente;
+                    s.hp = s.max_hp;
+
+                    // devolve o selvagem a lista de selvagens do no, para
+                    // manter os dados do mapa coerentes
+                    if (s.no_atual >= 0 &&
+                        s.no_atual < (int)estado.nos.size()) {
+                        auto& lista =
+                            estado.nos[s.no_atual].pokemons_selvagens;
+                        bool ja = false;
+                        for (int id : lista)
+                            if (id == s.id) { ja = true; break; }
+                        if (!ja) lista.push_back(s.id);
+                    }
+
+                }
             }
         }
 
@@ -261,20 +286,21 @@ namespace StateEngine{
         }
 
 
+        bool algumConsciente = false;
         for (Pokemon &p : treinador.party){
 
             if (p.status == PokemonStatus::Consciente){
-
+                algumConsciente = true;
                 p.hp = p.hp + 10;
 
                 if (p.hp > p.max_hp){
                     p.hp = p.max_hp;
                 }
             }
-            else if (p.status == PokemonStatus::Inconsciente){
-                return false;
-            }
         }
+
+        // se nao ha nenhum consciente para receber o remedio, a erva nao e usada
+        if (!algumConsciente) return false;
 
         treinador.ervas--;
         return true;
@@ -286,7 +312,7 @@ namespace StateEngine{
 
 
 
-    bool podePegarOvo(Treinador& treinador) {
+    bool podePegarOvo(const Treinador& treinador) {
 
 
         int total = treinador.party.size() + treinador.ovos.size();
@@ -310,7 +336,7 @@ namespace StateEngine{
             }
         }
 
-        if (cont >= 3){
+        if (cont >= 1){
             return true;
         }
 
@@ -328,9 +354,8 @@ namespace StateEngine{
             return false;
         }
 
-        bool tempodisp = prazoExpirado(estado);
-
-        if (!tempodisp){
+        // nao da pra inscrever se o prazo ja expirou
+        if (prazoExpirado(estado)){
             return false;
         }
 
@@ -363,10 +388,13 @@ namespace StateEngine{
 
 
 
-    int criarJogador(GameState &estado, std::string &nomenovo, std::vector<int> &especies){
+    int criarJogador(GameState &estado, const std::string &nomenovo, const std::vector<int> &especies){
 
 
         Treinador jogador;
+
+        // item inicial definido pelas constantes (nao depende do default da struct)
+        jogador.pokebolas = POKEBOLAS_INICIAIS;
 
         int idprox = 0;
 
@@ -388,7 +416,7 @@ namespace StateEngine{
 
         for (int esp : especies){
 
-            if (esp < 0 || esp >= estado.catalogo_especies.size()){
+            if (esp < 0 || esp >= (int)estado.catalogo_especies.size()){
                 
                 continue;
             }
@@ -397,6 +425,9 @@ namespace StateEngine{
 
             p.no_atual = jogador.no_atual;
 
+            // requisito: valores iniciais de ap/dp escolhidos aleatoriamente
+            p.ap_base = RNG::aleatorio(12, 18);
+            p.dp_base = RNG::aleatorio(12, 18);
 
             jogador.party.push_back(p);
         }
@@ -428,6 +459,7 @@ namespace StateEngine{
 
         andandoIndisponivelReducao(treinador, dist);
 
+        andandoReporSelvagens(estado, dist);
 
     }
 
@@ -455,7 +487,6 @@ namespace StateEngine{
             if (m.para == destino){
                 peso = m.peso;
                 tem = true;
-                peso = m.peso;
                 break;
             }
 

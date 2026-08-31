@@ -2,6 +2,8 @@
 
 using namespace std;
 
+#include "GraphEngine.hpp"
+#include "RNG.hpp"
 #include "Types.hpp"
 
 bool carregarMapa(string caminho, GameState& jogo) {
@@ -191,6 +193,13 @@ bool carregarMapa(string caminho, GameState& jogo) {
       jogo.rocket_id = t.id;
     }
 
+    // lideres de ginasio: guardam o ginasio de origem e se movem pela regiao
+    t.eh_lider = (lider == 1);
+    t.no_base = t.no_atual;
+    if (t.eh_lider) {
+      t.timer_casa = RNG::aleatorio(10, 40);  // descansa um pouco no inicio
+    }
+
     // o arquivo nao traz stats base por especie, entao o nivel vira AP e DP
     // inicial dos pokemons da party
     for (int p = 0; p < qtParty; p++) {
@@ -212,6 +221,53 @@ bool carregarMapa(string caminho, GameState& jogo) {
     jogo.nos[t.no_atual].treinadores.push_back(t.id);
   }
 
+  // tempo limite = K * soma_pesos, com K dentro de [10, 15]
+  if (k < 10 || k > 15) {
+    cout << "Erro: fator K fora do intervalo exigido [10,15] (K=" << k << ")"
+         << endl;
+    return false;
+  }
   jogo.tempo_limite = k * jogo.soma_pesos;
+
+  // valida que o grafo eh conexo / fortemente conexo. O grafo eh nao
+  // direcionado, logo conexo == fortemente conexo. Todo no deve ser alcancavel
+  // a partir do laboratorio (DFS) e deve conseguir voltar (BFS no reverso).
+  {
+    vector<bool> alcancaveis(n, false);
+    GraphEngine::dfs(jogo, jogo.laboratorio, alcancaveis);
+    for (bool v : alcancaveis) {
+      if (!v) {
+        cout << "Erro: grafo desconexo (nem todo no eh alcancavel a partir do "
+                "laboratorio)"
+             << endl;
+        return false;
+      }
+    }
+
+    // BFS a partir do laboratorio revisitando a lista de vizinhos confirma a
+    // conectividade (mesma validade para grafos nao direcionados)
+    vector<bool> visitados(n, false);
+    queue<int> fila;
+    fila.push(jogo.laboratorio);
+    visitados[jogo.laboratorio] = true;
+    while (!fila.empty()) {
+      int atual = fila.front();
+      fila.pop();
+      for (const auto& v : jogo.nos[atual].vizinhos) {
+        if (!visitados[v.para]) {
+          visitados[v.para] = true;
+          fila.push(v.para);
+        }
+      }
+    }
+    for (bool v : visitados) {
+      if (!v) {
+        cout << "Erro: grafo nao eh fortemente conexo (no inalcancavel)"
+             << endl;
+        return false;
+      }
+    }
+  }
+
   return true;
 }

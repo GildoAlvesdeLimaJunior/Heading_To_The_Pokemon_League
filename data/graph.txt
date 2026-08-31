@@ -1,7 +1,7 @@
 # 1. Configuracao do grafo:
 # [nos] [arestas] [fator_K]
 
-12 16 12
+14 19 12
 
 # N linhas: [origem] [destino] [peso]
 
@@ -21,6 +21,9 @@
 8 9 25
 9 10 15
 10 11 20
+12 5 15
+13 4 20
+12 13 10
 
 # 2. Definicao dos nos:
 # N linhas: [id_no] [nome] [tipo: REGULAR, LABORATORIO, PMC, GINASIO, ESTADIO]
@@ -37,6 +40,8 @@
 9 Lavender_Town GINASIO
 10 Route_10 PMC
 11 Indigo_Plateau ESTADIO
+12 Route_2 REGULAR
+13 Route_3 REGULAR
 
 # 3. Tipos elementais e matriz de multiplicadores:
 # [qt_tipos]
@@ -81,16 +86,17 @@ Agua Fogo Planta Eletrico Gelo Lutador Psiquico Fantasma
 
 # 6. Pokemons selvagens:
 # [qt_selvagens]
+# ficam nas rotas (nos REGULAR 12 e 13) onde batalhas sao permitidas
 
 5
 
 # [id_instancia] [id_especie] [no_atual] [ap_base] [dp_base]
 
-100 0 1 12 10
-101 2 1 10 12
-102 3 10 15 11
-103 4 10 14 13
-104 6 10 16 9
+100 0 12 12 10
+101 2 12 10 12
+102 3 13 15 11
+103 4 13 14 13
+104 6 12 16 9
 
 # 7. Itens disponiveis nos nos:
 # [qt_itens]
@@ -103,8 +109,8 @@ Agua Fogo Planta Eletrico Gelo Lutador Psiquico Fantasma
 0 0 Potion 0 20
 1 1 Super_Potion 0 50
 2 1 Revive 1 50
-3 10 Hyper_Potion 0 100
-4 10 Max_Revive 1 100
+3 12 Hyper_Potion 0 100
+4 13 Max_Revive 1 100
 
 # 8. Treinadores e lideres de ginasio:
 # [qt_treinadores]
@@ -121,5 +127,8 @@ Agua Fogo Planta Eletrico Gelo Lutador Psiquico Fantasma
 6 Sabrina 7 1 1 6 32
 7 Blaine 8 1 1 1 36
 8 Agatha 9 1 1 7 40
-9 Youngster_Joey 1 0 1 3 8
-10 Rocket_Grunt 10 0 1 7 25
+9 Youngster_Joey 12 0 1 3 8
+10 Rocket_Grunt 13 0 1 7 25
+
+# 9. Lideres de ginasio se movem pela regiao periodicamente:
+# (a unidade movel da equipe rocket aparece pelo nome "Rocket")

@@ -64,7 +64,6 @@ struct Pokemon {
   int xp = 0;
   int evo = 1;
   int dist_ovo = 0;
-  int dist_ovo = 0;
   int dist_xp = 0;
 
   PokemonStatus status = PokemonStatus ::Consciente;
@@ -89,6 +88,16 @@ struct Treinador {
   int ervas = 0;
   int insignias = 0;
   bool equipe_rocket = false;
+
+  // lideres de ginasio movem-se pela regiao e retornam periodicamente
+  bool eh_lider = false;
+  int no_base = -1;    // ginasio de origem do lider
+  int timer_casa = 0;  // unidades restantes descansando no ginasio
+  int timer_fora = 0;  // movimentos restantes vagueando fora do ginasio
+  bool voltando = false;  // true quando esta a caminho de volta ao ginasio
+
+  std::vector<int> insignias_ganhas;  // ids dos lideres ja derrotados
+  std::vector<Item> inventario;       // itens coletados no mapa
 };
 
 struct GameState {

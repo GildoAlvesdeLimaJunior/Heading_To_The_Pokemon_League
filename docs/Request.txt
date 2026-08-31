@@ -1,0 +1,184 @@
+CCT/UFCA
+Algoritmos em Grafos
+1
+o
+semestre de 2026
+
+Prof. Carlos Vinicius G. C. Lima
+Projeto: Rumo à Liga Pokémon
+05/07/2026
+
+Informações:
+i. A linguagem de programação utilizada pode ser a de sua preferência.
+
+ii. Os algoritmos implementados devem seguir aqueles com a menor complexidade possível em termos assintóti-
+cos.
+
+iii. A clareza e concisão das implementações também são objetos de avaliação.
+iv. Comentários de ajuda no código também serão levados em consideração.
+v. O projeto deve ser implementado em grupos de três pessoas.
+vi. O prazo máximo para entrega é o dia 30/08/2026.
+vii. As notas no projeto serão individuais.
+viii. A entrega do projeto consinstirá de forma online (github, por exemplo) contendo: os arquivos de código; instruções
+
+para a execução do seu código; links para vídeos contendo a explicação da implementação, um para cada partici-
+pante da equipe; no vídeo deverá ser explicado por qual parte você foi responsável e como foram implementadas
+
+as soluções desta parte. Não envie arquivos de vídeo.
+ix. Cada membro deve ficar responável por ao menos uma operação sobre o grafo ou sua representação.
+
+Introdução
+A Liga Pokémon se aproxima e agora você está com idade suficiente para se tornar um treinador pokémon. Mas você
+quer ser um dos melhores treinadores da sua região e, para isso, precisa se classificar para a Liga.
+O treinador deve viajar pela região desafiando os Líderes de Ginásio oficiais e vencendo-os em combate. Se uma
+região tiver mais de oito líderes cadastrados, o treinador precisa apresentar quaisquer 8 insígnias oficiais daquela
+região específica no momento da inscrição. Considere que líderes de ginásio podem estar se movimentando pela região
+ou presentes de forma fixa no seu ginásio. Caso se movimentem, eles retornam periodicamente ao seu ginásio e
+permanecem no mesmo por um período determinado de tempo. Além disso, cada insígnia conquistada é permanente,
+mesmo que perca uma batalha no futuro.
+O treinador deve possuir no máximo 6 pokémons o tempo todo. Caso consiga capturar mais de 6 pokémons,
+deve escolher quais 6 deve permanecer consigo, enquanto o excedente é transportado para estudos para o Professor
+Carvalho, pesquisador da região. Inicialmente, o treinador recebe três pokémons do Professor Carvalho para se defender
+de pokémons selvagens, capturar outros pokémons ou batalhar com outros treinadores e líderes de ginásio. Considere
+que os três pokémons inciais são de tipos distintos entre água, fogo e planta. Caso o treinador não queira os três
+pokémons inicias oferecidos pelo Professor Carvalho, será lhe dado um pokémon aleatório disponível no laboratório do
+professor, mas apenas um.
+Cada pokémon possui um nível de evolução, representado por pontos de experiência (XP). A medida que participam
+de batalhas, ganham mais XP’s. Cada vitória aumenta seu XP em 10 unidades e cada derrota aumenta seu XP em 3
+unidades. Considere que não há empates em batalhas pokémons. Além disso, um pokémon adquire XP’s simplesmente
+por crescer e se desenvolver, aumentando seu XP em uma unidade a cada 100 unidades de distância percorrida.
+Contudo, um pokémon pode evoluir para uma fase superior, se tornando um outro pokémon com diferentes ataques e
+defesas, eventualmente, e com mais poder que na fase anterior.
+Cada pokémon também possui pontos de ataque (AP) e pontos de defesa (DP). Tais valores inicias devem ser
+escolhidos de forma aleatória para cada pokémon. Os AP’s e DP’s podem crescer a medida que um pokémon participa
+de batalhas, sejam por meio de treinamentos com seu treinador, ou de forma selvagem na natureza. Aumenta-se em
+uma unidade os AP’s e DP’s sempre que um pokémon derrota um pokémon com XP’s maiores ou iguais aos seus
+XP’s. Caso contrário, seus AP’s e DP’s permanecem iguais. Os AP’s e DP’s também aumentam a medida que os
+XP’s aumentam: os valores totais de AP’s e DP’s devem corresponder aos seus valores iniciais acrescidos de 10% de
+seus XP’s e de pontos ganhos em batalhas, caso existam.
+
+1
+
+Pokémons também podem evoluir, assumindo formas mais poderosas e, eventualmente, com ataques e defesas
+novas, além daqueles que já conhecia nas fases anteriores. Para evoluir, um pokémon precisa acumular 1000 XP’s. Em
+sua nova forma, seus AP’s e DP’s são acrescidos de 30% em relação a sua forma anterior. Inicialmente, cada treinador
+recebe do Professor Carvalho apenas pokémons em fase inicial, para sua segurança. Considere também que pokémons
+possuam no máximo três fases de evolução, com nomes distintos para cada uma delas.
+Treinadores pokémon podem encontrar ovos de pokémons selvagens e chocá-los por meio do uso de encubadora
+artificiais. Considere que é preciso de um tempo equivalente a percorrer uma distância de 100 unidades para que um
+ovo seja chocado pela encubadora. Neste caso, o pokémon apresenta XP’s iguais a 0, apesar de possuir os valores de
+AP’s e DP’s equivalentes aos de um pokémon em fase inicial da sua espécie. Neste caso, também, o pokémon nascido
+de encubadora passa a fazer parte do seu conjunto de pokémons disponíveis para batalhas, em caso de disponibilidade
+dentre o máximo de 6 permitidos. Um treinador pode optar por não ficar com um ovo, caso o encontre, mas não pode
+abandoná-lo caso o tenha pego até chocar. Um treinador pode manter no máximo 6 pokémons ativos, mas mais de
+um ovo não chocado ao mesmo tempo, contanto que o total de pokémons não ultrapasse 7 unidades contando ativos e
+não chocados. Considere também que o tipo de pokémon do ovo encontrado é desconhecido até ser chocado, uma vez
+que seus pais não estavam por perto quando você o encontrou.
+Cada treinador recebe inicialmente do professor Carvalho, além dos três pokémons iniciais ou um aleatório, uma
+encubadora e um conjunto de 7 pokébolas. Destas pokébolas, seis delas podem manter pokémons para treinamento e
+batalhas e outra para novas capturas.
+Após uma batalha, um pokémon pode permanecer inconsciente por um certo período ou mesmo machucado.
+Considere que um pokémon inconsciente permanece assim por um período de tempo aleatório entre o equivalente a 10
+e 50 unidades de distância percorridas, onde, neste período, estará indisponível para ser utilizado em batalhas. Caso
+um pokémon sofra machucado graves, o mesmo, além de permanecer indisponível enquanto estiver machucado, deve
+ser tratado no Centro Médico Pokémon (PMC) da região para se recuperar, necessitando de um tempo aleatório entre
+o equivalente a 10 e 50 unidades de distância percorridas parado no PMC. Considere que não há fila de espera no
+CMP.
+Para determinar o estado de cada pokémon, os mesmos possuem um indicador de Pontos de Saúde (HP), que vai
+de 1 a 100. Um pokémon é considerado consciente se seus HP’s são maiores ou iguais a 20. Caso estejam abaixo
+de 5, o pokémon deve ser levado ao PMC, pois está muito machucado. Ao sair do PMC, seus HP’s voltam a ficar
+iguais a 100. Considere também que os HP’s se recuperam em uma unidade para cada pokémon a cada 10 unidades
+de tempo percorridas, até o máximo de 100 unidades. O treinador pokémon também pode encontrar no caminho
+ervas especiais para produzir remédios naturais para os seus pokémons. Caso encontre alguma, pode preparar uma
+porção e aumentar os HP’s de todos os seus pokémons em 10 unidades, não ultrapassando o máximo de 100, para
+cada pokémon consciente. Porém, pokémons inconscientes permanecem inconscientes, pois não conseguem tomar o
+remédio, sendo necessário permanecer em repouso durante o tempo necessário ou ser tradado no PMC. Considere que
+os HP’s de um pokémon muito machucado permaneçam até ser tratado no PMC.
+Para batalhar com outro treinador pokémon, deve-se possuir ao menos três pokémons conscientes. Em caso positivo
+e deseje desafiar um treinador, deve-se escolher três dos seus pokémons disponíveis para a batalha, onde um treinador
+vence apenas quando os três pokémons do oponente estiverem inconscientes ou se o treinador desafiado desistir da
+batalha (o desafiante não pode abandonar a batalha). Considere que qualquer treinador pode desafiar qualquer outro
+sempre que se encontrarem e o desafiado pode aceitar ou se recusar a batalhar. Considere também que cada treinador
+possui pontos XP’s (pontos de experiência). A cada vitória de um treinador com XP’s maiores ou iguais a sua, seus
+XP’s aumentam de três unidades e aumentam de uma unidade, caso contrário.
+Durante uma disputa entre dois pokémons de treinadores diferentes, cada pokémon recebe AP’s e DP’s a mais
+que os XP’s de seu treinador. A batalha se dá em turnos, onde o treinador desafiado começa atacando. Durante um
+ataque, o treinador atacante pode escolher qualquer ataque disponível e utilizar contra o pokémon de seu oponente
+na batalha, que pode utilizar seus DP’s para se defender. O ataque inflige ao pokémon atacado danos em seus HP’s
+de um total igual a diferença entre os AP’s do atacante e os DP’s do atacado. Caso a diferença seja não positiva,
+não há danos ocasionados. Além disso, o pokémon atacado pode se esquivar com uma probabilidade proporcional à
+diferença em módulo de seus XP’s e dos XP’s do pokémon atacante. Em caso de esquiva, o ataque não surte efeito.
+Porém, o pokémon atacante também possui uma chance proporcional à diferença em módulo de seus XP’s e dos XP’s
+do pokémon defensor de causar um dano com o dobro de dano. Uma vez que um pokémon se torne inconsciente, o
+mesmo é substituído por qualquer outro a escolha de seu treinador. Considere que cada batalha dura o equivalente a
+uma unidade de tempo percorrido.
+Para capturar pokémons selvagens, é necessário desafiá-los em batalhas. Neste caso o pokémon desafiado não
+possui treinador e será capturado caso esteja inconsciente. O treinador pode desistir de capturar o pokémon selvagem
+e abandonar a luta, deixando o pokémon selvagem fugir. Neste caso o pokémon selvagem se mantém escondido durante
+toda a jornada para o pokémon desafiante, mas os danos da batalha de captura ocorrem como em qualquer outra
+durante a jornada. Em caso de captura com sucesso, há um incremento nos XP’s do treinador e nos XP’s dos pokémons
+envolvidos na batalha de um total de 3 unidades cada.
+Cada pokémon possui um tipo, dentre vários possíveis, como água, fogo, grama, venenoso, fantasma, etc, além de
+possuir mais de um tipo em muitos casos. Não é necessário implementar as vantagens e desvantagens entre os tipos
+
+2
+
+em batalhas. Caso sejam implementadas, será dada bonificação extra na nota do trabalho. Para isso, deve-se respeitar
+as vantagens originais entre todos os tipos existentes.
+Uma vez que um líder de ginásio é derrotado, o mesmo entrega uma insígnia correspondente ao seu ginásio para
+o treinador, que a mantém consigo. Ao adquirir 8 insígnias distintas, o treinador pode se dirigir ao estádio da Liga
+Pokémon para realizar sua inscrição na competição e conseguirá disputar o torneio. Porém, há um prazo máximo para
+isto, sendo considerado inapto caso não consiga realizar a inscrição no prazo, mesmo com as 8 insígnias conquistadas.
+Requisitos Adicionais
+1. O programa deve ler a descrição de um grafo ponderado a partir de um arquivo texto.
+2. O grafo descreve as diferente possibilidades de caminhos a serem percorridos durante a jornada, contendo vértices,
+arestas e pesos nas arestas, representando o tempo necessário para percorrer tal aresta entre suas extremidades.
+Considere que é possível se mover em qualquer direção e passar pontos e arestas quantas vezes desejar.
+
+3. Considere que o treinador pokémon possui um mapa completo da região, com as distâncias entre pontos adja-
+centes indicadas no mapa, além das posições dos ginásios, MCP e estádio para inscrição, além do ponto inicial
+
+do centro do Professor Carvalho.
+4. O arquivo também indica quantos pokémons, treinadores e itens extras existem na região. Além disso, as
+localizações, os pontos XP’s, HP’s, AP’s, DP’s de cada pokémon/treinador/item que já estão espalhados na
+região deve ser escolhido de forma aleatória.
+5. Os níveis de evoluções entre pokémons deve ser especificado no arquivo, além das vantagens em batalhas de
+pokémons de tipos diferentes entre si, caso seja implementado (lembre que tal implementação não é obrigatória).
+Caso se implemente as vantagens entre tipos, explicar como se dão essas vantagens durante as batalhas e como
+foram implementadas.
+6. Também deve-se representar o prazo de tempo máximo para que se realize a inscrição no torneio (esse valor deve
+ser condizente com os valores dados de tempo de percurso entre cada ponto, devendo ser ao menos igual a 10
+vezes a soma de todos os pesos nas arestas e no máximo igual a 15 vezes tal soma).
+7. Os treinadores pokémons e pokémons da região podem se mover livremente estando em qualquer ponto. Batalhas
+no MCP e laboratório do Professor Carvalho são proibidas. Considere que cada pokémon e treinador move-se
+um vértice por vez durante a região.
+Critérios de Avaliação
+Os projetos serão avaliados com base nos seguintes critérios:
+1. Corretude da implementação (até 70%)
+• O sistema simula corretamente a dinâmica desejada;
+• Os algoritmos foram implementados corretamente.
+2. Eficiência dos algoritmos (até 20%)
+• Uso apropriado de estruturas de dados para otimizar tempos de execuções;
+• Implementação de algoritmos adequados para resolver os problemas existentes da melhor forma.
+3. Qualidade do Código (até 10%)
+• Código bem estruturado e documentado;
+• Uso adequado de modularização e boas práticas de programação.
+4. Implementação de elementos extras (até 20%)
+• Quais tipos tem vantagens sobre quais outros e como são representados;
+• Implementação das batalhas utilizando as diferenças entre os tipos;
+• Implementação de uma Equipe Rocket, ou seja, um equipe de treinadores que rouba pokémons e/ou insignias
+de outros treinadores e possuem pokémons próprios. A cada derrota, a Equipe Rocket é enviada para um
+lugar aleatório e distante do ponto de ataque. Em caso de vitória, a mesma foge e fica invisível por um certo
+tempo, reaparecendo em algum lugar qualquer, posteriormente. O roubo exige vencer um duelo pokémon.
+
+3
+
+Entrega
+Os alunos deverão entregar:
+• Código-fonte do sistema.
+• Links para vídeos explicando a parte implementada por cada membro da equipe.
+• As notas serão individuais e levam em conta a proporção e dificuldade do que foi implementado por cada membro
+em relação a todo o trabalho.
+• Observação: pode-se fazer uso de bibliotecas para manipulação de estruturas de dados clássicas, como listas,
+pilhas, filas, heaps, etc. Porém, os algoritmos vistos em sala e dinâmica devem ser implementados sem o uso de
+bibliotecas disponíveis pelas linguagens utilizadas.

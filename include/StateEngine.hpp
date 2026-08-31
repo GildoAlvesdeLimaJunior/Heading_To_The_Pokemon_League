@@ -11,13 +11,12 @@ bool moverTreinador(GameState& estado, Treinador& treinador, int destino);
 
 /* aplica os efeitos de percorrer 'distancia'
 choco de ovos, regeneracao de HP e contagem dos tempos de
-indisponibilidade. Tambem avanca o relogio global */  
-//função base!
+indisponibilidade. Tambem avanca o relogio global */
 void AvancarTempo(GameState& estado, Treinador& treinador, int distancia);
 
 
 //true se ainda cabe mais um ovo
-//chamar isso antas de adicionar um ovo encontrado ao vector treinador.ovos.
+//chamar isso antes de adicionar um ovo encontrado ao vector treinador.ovos.
 bool podePegarOvo(const Treinador& treinador);
 
 
@@ -68,13 +67,14 @@ atingem 100 unidades chocam e sao movidos para a equipe ativa
 ou para o PC do professor se a equipe ja estiver com 6 pokemons */
 void andandoChocarOvos(Treinador& treinador, int dist);
 
-/* Cura passivamente 1 HP por pokemon consciente a cada 10 unidades de
-distancia percorrida, nao afeta pokemons inconscientes */ 
+/* (intencionalmente vazia) Pokemon consciente NAO recupera HP passivamente
+ao caminhar: a recuperacao acontece via Centro Pokemon, itens ou ervas */
 void andandoRecuperarHP(Treinador& treinador, int dist);
 
-/* decrementa tempo_recuperacao dos pokemons Inconsciente/No_PMC em
-"distancia" unidades. Ao chegar a zero, o pokemon volta a
-ficar Consciente com HP restaurado para max_hp */
+/* decrementa tempo_recuperacao dos pokemons Inconsciente em "distancia"
+unidades. Ao chegar a zero, o pokemon volta a ficar Consciente com HP
+restaurado para max_hp. Pokemon No_PMC (muito machucado, HP < 5) NAO se
+recupera andando: exige tratamento no Centro Pokemon */
 void andandoIndisponivelReducao(Treinador& treinador, int dist);
 
 // true se batalhas são proibidas no no "no_id", seja laboratorio ou pmc.
@@ -91,6 +91,11 @@ bool enviarParaCarvalho(Treinador& treinador, int indicepokemon);
 /* dá +1 de xp pra cada 100 de distância percorrida pra todos os pokemons
 independente de status */
 void andandoGanharXP(Treinador &treinador, int dist);
+
+/* reativa selvagens que fugiram e nao foram capturados depois que o
+timer (tempo_recuperacao) zera: voltam a ficar Consciente com HP cheio
+no mesmo no, podendo ser encontrados de novo */
+void andandoReporSelvagens(GameState& estado, int dist);
 
 }
 
