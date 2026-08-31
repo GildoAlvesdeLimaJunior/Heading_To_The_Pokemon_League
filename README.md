@@ -155,7 +155,9 @@ The state of each section is inferred in order, so keep the sections in the sequ
 ## Authors
 
 - **Gildo Alves de Lima Junior**
+- Video : https://youtu.be/LDUr2t2w12E
 - **João Landin da Cruz Neto**
+- Video : https://youtu.be/cEEJ3ymrExU
 - **Francisco Almir Bezerra Leite**
 
 ## Course
